@@ -1,57 +1,94 @@
-set-window-option -g mode-keys vi
-bind-key -Tcopy-mode-vi 'v' send -X begin-selection
-bind-key -Tcopy-mode-vi 'y' send -X copy-selection
-unbind p
-bind p pasteb
-
 # 设置前缀为 ctrl-a
 set -g prefix C-a
 unbind C-b
 bind C-a send-prefix
-# <prefix> hjkl 切换 panel
-bind h select-pane -L
-bind j select-pane -D
-bind k select-pane -U
-bind l select-pane -R
-# Clean Screen
-bind -n C-k send-keys -R \; send-keys C-l \; clear-history
 
-# Linux only: copy to clipboard
-# TOOO
+# 常用快捷键配置 {
+    # Clean Screen
+    bind -n C-k send-keys -R \; send-keys C-l \; clear-history
 
-# setw -g mode-keys vi      # Vi风格选择文本
-# [tmux-yank]
-# > usage
-#   <prefix> + y: 从命令行复制文本到剪切板
-#   <prefix> + Y: 复制当前工作面板的工作路径到剪切板
-#   复制模式下:
-#       y: 复制选择的部分到剪切板
-#       Y: 粘贴选择的部分
-# > config
-#   MacOS: brew install reattach-to-user-namespace
-#   Linux: sudo apt-get install xsel
+    # H 设置当前路径为默认路径
+    bind H attach-session -c '#{pane_current_path}' \; display "tmux home is reset!"
 
-# [tmux-resurrect]
-# > usage
-#   prefix + Ctrl-s - save
-#   prefix + Ctrl-r - restore
+    # R 刷新配置文件
+    bind R source-file ~/.tmux.conf \; display "tmux conf is reloaded!"
+# }
 
-# [tpm]
-# > usage
-#   <prefix> + I: 安装插件
-#   <prefix> + U: 更新插件
-#   <prefix> + alt + u: 卸载插件
-# > config
-# List of plugins
-set -g @plugin 'tmux-plugins/tpm'
-set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'tmux-plugins/tmux-resurrect'
-set -g @plugin 'tmux-plugins/tmux-yank'
+# 设置 vi 风格的移动剪切方式 {
+    set-window-option -g mode-keys vi
+    bind-key -Tcopy-mode-vi 'v' send -X begin-selection
+    bind-key -Tcopy-mode-vi 'y' send -X copy-selection
+    unbind p
+    bind p pasteb
+    # <prefix> hjkl 切换 panel
+    bind h select-pane -L
+    bind j select-pane -D
+    bind k select-pane -U
+    bind l select-pane -R
+# }
 
-# Other examples:
-# set -g @plugin 'github_username/plugin_name'
-# set -g @plugin 'git@github.com/user/plugin'
-# set -g @plugin 'git@bitbucket.com/user/plugin'
 
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
+# 状态栏设置 {
+    # 参考
+    # - http://note4code.com/2016/07/03/tmux-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE/
+    # -  https://stackoverflow.com/questions/12003726/give-a-hint-when-press-prefix-key-in-tmux
+    # 自动重新编号 window
+    set -g renumber-windows on
+    # 设置自动刷新的时间间隔
+    set -g status-interval 1
+    # 状态栏左对齐
+    set -g status-justify left
+    # 状态栏左侧宽度
+    set -g status-left-length 20
+    # 状态栏右侧宽度
+    set -g status-right-length 50
+    # 状态栏背景颜色
+    set -g status-bg '#333333'
+    # 状态栏前景颜色
+    set -g status-fg '#ffffff'
+    # 状态栏左侧显示 session 的名字
+    set -g status-left '#[bg=#00bb00] [#S] #[default]'
+    # 状态栏右侧显示时间
+    #set -g status-right '#[fg=white,bg=#55bb00] [#h] #[fg=white,bg=#009c00] %Y-%m-%d #[fg=white,bg=#007700] %H:%M:%S '
+    set -g status-right '#{?client_prefix,#[reverse]<PREFIX>#[noreverse],} #[fg=white,bg=#444444] [#h] #[fg=white,bg=#666666] %Y-%m-%d #[fg=white,bg=#888888] %H:%M:%S '
+    # 当前激活窗口在状态栏的展位格式
+    setw -g window-status-current-format '#[bg=#ff0000, fg=#ffffff, bold]*[#I] #W*'
+    # 未激活每个窗口占位的格式
+    setw -g window-status-format '#[bg=#0000ff, fg=#ffffff] [#I] #W '
+# }
+
+# tpm 插件 {
+    # > usage
+    #   <prefix> + I: 安装插件
+    #   <prefix> + U: 更新插件
+    #   <prefix> + alt + u: 卸载插件
+
+    set -g @plugin 'tmux-plugins/tpm'
+    set -g @plugin 'tmux-plugins/tmux-sensible'
+
+    # [tmux-resurrect]
+    # > usage
+    #   prefix + Ctrl-s - save
+    #   prefix + Ctrl-r - restore
+    set -g @plugin 'tmux-plugins/tmux-resurrect'
+
+    # [tmux-yank]
+    # > usage
+    #   <prefix> + y: 从命令行复制文本到剪切板
+    #   <prefix> + Y: 复制当前工作面板的工作路径到剪切板
+    #   复制模式下:
+    #       y: 复制选择的部分到剪切板
+    #       Y: 粘贴选择的部分
+    # > config
+    #   MacOS: brew install reattach-to-user-namespace
+    #   Linux: sudo apt-get install xsel
+    set -g @plugin 'tmux-plugins/tmux-yank'
+
+    # Other examples:
+    # set -g @plugin 'github_username/plugin_name'
+    # set -g @plugin 'git@github.com/user/plugin'
+    # set -g @plugin 'git@bitbucket.com/user/plugin'
+
+    # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+    run '~/.tmux/plugins/tpm/tpm'
+# }
