@@ -17,7 +17,12 @@ bind C-a send-prefix
 # 设置 vi 风格的移动剪切方式 {
     set-window-option -g mode-keys vi
     bind-key -Tcopy-mode-vi 'v' send -X begin-selection
-    bind-key -Tcopy-mode-vi 'y' send -X copy-selection
+
+    if-shell 'test "$(uname)" = "Darwin"' "bind-key -Tcopy-mode-vi 'y' send -X copy-selection"
+    # ubuntu 需要安装 xclip
+    # sudo apt-get install --assume-yes xclip
+    if-shell 'test "$(uname)" = "Linux"' "bind -t vi-copy y copy-pipe 'xclip -sel clip -i'"
+
     unbind p
     bind p pasteb
     # <prefix> hjkl 切换 panel
