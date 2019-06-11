@@ -21,7 +21,7 @@ bind C-a send-prefix
     if-shell 'test "$(uname)" = "Darwin"' "bind-key -Tcopy-mode-vi 'y' send -X copy-selection"
     # ubuntu 需要安装 xclip
     # sudo apt-get install --assume-yes xclip
-    if-shell 'test "$(uname)" = "Linux"' "bind -t vi-copy y copy-pipe 'xclip -sel clip -i'"
+    if-shell 'test "$(uname)" = "Linux"' "bind-key -Tcopy-mode-vi 'y' send -X 'xclip -sel clip -i'"
 
     unbind p
     bind p pasteb
