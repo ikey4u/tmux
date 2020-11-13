@@ -5,7 +5,9 @@ bind C-a send-prefix
 
 # 设置 256 颜色
 set -g default-terminal "screen-256color"
-# 以下两项由 neovim 的 :checkhealth 建议而设置
+
+# 以下三项由 neovim 的 :checkhealth 建议而设置
+set-option -sa terminal-overrides ',xterm-256color:RGB'
 set-option -sg escape-time 10
 set-option -g focus-events on
 
